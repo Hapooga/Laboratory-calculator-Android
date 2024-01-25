@@ -1,7 +1,7 @@
 #ifndef CHEMICALEQUIVALENTCONTROLLER_H
 #define CHEMICALEQUIVALENTCONTROLLER_H
 
-#include <map>
+#include <vector>
 #include <QString>
 
 class ChemicalEquivalentController
@@ -10,16 +10,22 @@ public:
 
     static const ChemicalEquivalentController& Instence();
 
-    ChemicalEquivalentController(const ChemicalEquivalentController& other) = delete;
-    ChemicalEquivalentController& operator = (const ChemicalEquivalentController& other) = delete;
+    //ChemicalEquivalentController(const ChemicalEquivalentController& other) = delete;
 
     size_t FindEquivalent(const QString& formula) const;
 
 private:
 
-    ChemicalEquivalentController();
+    struct ResultVariant {
+        QString _equivalent_variant;
+        float _equivalent_value;
+        size_t _molecules;
+    };
 
-    const std::map<const QString, const float> chemicalEquivalents;
+    ChemicalEquivalentController();
+    //ChemicalEquivalentController& operator = (const ChemicalEquivalentController& other);
+
+    std::vector<std::pair<QString, float>> chemicalEquivalents;
 };
 
 #endif // CHEMICALEQUIVALENTCONTROLLER_H

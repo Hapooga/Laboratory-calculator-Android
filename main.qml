@@ -182,7 +182,7 @@ Window {
 
     MyInputItem {
         id: vectorDnaMassInput
-        textCaption: "Vector DNA mass, ng."
+        textCaption: "Vector DNA mass, ng"
         leftMarginInput: maxTextLenthThirdPage() + leftMarginText * 2
         textFieldWidth: Math.min(parent.width - leftMarginInput - leftMarginText, 160)
         anchors { horizontalCenter: pageCaption.horizontalCenter; top: pageCaption.bottom; topMargin: 60 }
@@ -238,7 +238,7 @@ Window {
 
     MyInputItem {
         id: insertDnaMassOutput
-        textCaption: "Insert DNA  mass, ng."
+        textCaption: "Insert DNA  mass, ng"
         leftMarginInput: maxTextLenthThirdPage() + leftMarginText * 2
         textFieldWidth: Math.min(parent.width - leftMarginInput - leftMarginText, 160)
         anchors { horizontalCenter: molarVectorInsertRatioLeftInput.horizontalCenter; top: molarVectorInsertRatioLeftInput.bottom; topMargin: 10 }
@@ -248,6 +248,7 @@ Window {
 
     ///////////////////////////////////////////////////////////////////
     // Buttons
+
     Button {
         id: calculateButton
 
@@ -283,32 +284,17 @@ Window {
         }
 
         onClicked: {
-            if(swip.currentIndex === swip.thirdPageNumber || swip.currentIndex === swip.secondPageNumber) {
-                if (radioButtonInputItemTop.checkedState){
-                    adapter.calculateVolume(
-                                inputFormula.textInput, radioButtonInputItemMiddle.textInput,
-                                radioButtonInputItemBottom.textInput, swip.currentIndex === swip.thirdPageNumber);
-                }
-                if (radioButtonInputItemMiddle.checkedState){
-                    adapter.calculateConcentration(
-                                inputFormula.textInput, radioButtonInputItemTop.textInput,
-                                radioButtonInputItemBottom.textInput, swip.currentIndex === swip.thirdPageNumber);
-                }
-                if (radioButtonInputItemBottom.checkedState) {
-                    adapter.calculateMass(
-                                inputFormula.textInput, radioButtonInputItemTop.textInput,
-                                radioButtonInputItemMiddle.textInput, swip.currentIndex === swip.thirdPageNumber);
-                }
-            }
-            if(swip.currentIndex === swip.firstPageNumber){
-                adapter.calculateLigation(
-                            vectorDnaMassInput.textInput, vectorDnaLengthInput.textInput,
-                            insertDnaLengthInput.textInput, molarVectorInsertRatioRigthInput.textInput,
-                            molarVectorInsertRatioLeftInput.textInput)
-            }
-
+            calculate()
         }
     }
+
+
+    Keys.onYesPressed: {
+        calculate()
+        console.log("move left")
+    }
+
+
 
     Button {
         id: cleareButton
@@ -398,6 +384,33 @@ Window {
         anchors.horizontalCenter: swip.horizontalCenter
     }
 
+
+
+    function calculate() {
+        if(swip.currentIndex === swip.thirdPageNumber || swip.currentIndex === swip.secondPageNumber) {
+            if (radioButtonInputItemTop.checkedState){
+                adapter.calculateVolume(
+                            inputFormula.textInput, radioButtonInputItemMiddle.textInput,
+                            radioButtonInputItemBottom.textInput, swip.currentIndex === swip.thirdPageNumber);
+            }
+            if (radioButtonInputItemMiddle.checkedState){
+                adapter.calculateConcentration(
+                            inputFormula.textInput, radioButtonInputItemTop.textInput,
+                            radioButtonInputItemBottom.textInput, swip.currentIndex === swip.thirdPageNumber);
+            }
+            if (radioButtonInputItemBottom.checkedState) {
+                adapter.calculateMass(
+                            inputFormula.textInput, radioButtonInputItemTop.textInput,
+                            radioButtonInputItemMiddle.textInput, swip.currentIndex === swip.thirdPageNumber);
+            }
+        }
+        if(swip.currentIndex === swip.firstPageNumber){
+            adapter.calculateLigation(
+                        vectorDnaMassInput.textInput, vectorDnaLengthInput.textInput,
+                        insertDnaLengthInput.textInput, molarVectorInsertRatioRigthInput.textInput,
+                        molarVectorInsertRatioLeftInput.textInput)
+        }
+    }
 
     function clearTextById(id) {
         id.textInput = ""

@@ -1,30 +1,44 @@
 #include "chemicalequivalentcontroller.h"
 
+#include <map>
+
+// "ZnCl2",
+// "KHCO3",
+// "Al2(CO3)3",
+// "Al(HCO3)3",
+// "(MgOH)2SO4"
+
 ChemicalEquivalentController::ChemicalEquivalentController() :
     chemicalEquivalents
     ( {
-        { "OH"  ,  1 },  { "HCOO"  ,  1 },
-        { "F"   ,  1 },  { "CH3COO",  1 },
-        { "Cl"  ,  1 },  { "C2O4"  ,  2 },
-        { "Br"  ,  1 },  { "H2PO4" ,  1 },
-        { "I"   ,  1 },  { "HPO4"  ,  2 },
-        { "S"   ,  2 },  { "HCO3"  ,  1 },
+        { "F"   ,  1 },
+        { "I"   ,  1 },
+        { "S"   ,  2 },
+        { "Br"  ,  1 },
+        { "OH"  ,  1 },
+        { "Cl"  ,  1 },
         { "CN"  ,  1 },
         { "NO2" ,  1 },
         { "NO3" ,  1 },
         { "PO4" ,  3 },
-        { "AsO4",  3 },
         { "SO3" ,  2 },
         { "SO4" ,  2 },
         { "CO3" ,  2 },
+        { "ClO" ,  1 },
+        { "AsO4",  3 },
         { "SiO3",  2 },
         { "CrO4",  2 },
-        { "Cr2O7", 2 },
         { "MnO4",  1 },
-        { "ClO" ,  1 },
         { "ClO2",  1 },
         { "ClO3",  1 },
         { "ClO4",  1 },
+        { "HCOO",  1 },
+        { "C2O4",  2 },
+        { "HPO4",  2 },
+        { "HCO3",  1 },
+        { "H2PO4", 1 },
+        { "Cr2O7", 2 },
+        { "CH3COO", 1 },
     } )
 {
 }
@@ -37,17 +51,33 @@ const ChemicalEquivalentController& ChemicalEquivalentController::Instence() {
 
 size_t ChemicalEquivalentController::FindEquivalent(const QString& formula) const {
 
-    size_t molecules = 0;
+    const size_t MAX_TAIL_AFTER_TAPLE = 2;
+    const size_t DIGIT_SIZE = 1;
+    const size_t DEFAULT_MOLECULS = 1;
 
-    size_t max_tail_after_taple = 2;
+    std::map<size_t, ResultVariant> buffer;
+    QString substring_buffer;
+    for(const auto& [equivalent_variant, value] : chemicalEquivalents) {
 
-    auto equivalent_it = chemicalEquivalents.find(formula);
-
-    if((formula.back().isDigit() && formula[formula.size() - max_tail_after_taple] == ')') ||
-        equivalent_it->first != formula.back()) {
-
-        molecules = formula.back().digitValue();
+        if(formula.back().isDigit() && formula[formula.size() - MAX_TAIL_AFTER_TAPLE] == ')'){
+            substring_buffer = formula.mid(formula.size() - equivalent_variant.size() - MAX_TAIL_AFTER_TAPLE, equivalent_variant.size());
+            if(substring_buffer == equivalent_variant) {
+                buffer[equivalent_variant.size()] =
+                    ResultVariant{equivalent_variant, value, size_t(formula.back().digitValue())};
+            }
+        } else {
+            substring_buffer = formula.mid(formula.size() - equivalent_variant.size() - DIGIT_SIZE,equivalent_variant.size());
+            if(substring_buffer == equivalent_variant) {
+                buffer[equivalent_variant.size()] =
+                    ResultVariant{equivalent_variant, value, size_t(formula.back().digitValue())};
+            }
+            substring_buffer = formula.mid(formula.size() - equivalent_variant.size(), equivalent_variant.size());
+            if(substring_buffer == equivalent_variant) {
+                buffer[equivalent_variant.size()] =
+                    ResultVariant{equivalent_variant, value, DEFAULT_MOLECULS};
+            }
+        }
     }
 
-    return (molecules > 1) ? equivalent_it->second * molecules : equivalent_it->second;
+    return buffer.empty() ? 1 : buffer.rbegin()->second._equivalent_value * buffer.rbegin()->second._molecules;
 }

@@ -55,5 +55,9 @@ Item {
             radius: 10
         }
         readOnly: radioButton.checked
+
+        //TODO
+        Keys.onReturnPressed: calculate()
+        Keys.onTabPressed: calculate()
     }
 }

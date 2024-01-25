@@ -52,6 +52,9 @@ Item {
                 border.width: 2
                 radius: 10
             }
+            //TODO
+            Keys.onReturnPressed: calculate()
+            Keys.onTabPressed: calculate()
         }
    // }
 }
