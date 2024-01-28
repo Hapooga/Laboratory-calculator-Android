@@ -3,16 +3,26 @@ import QtQuick.Controls 2.15
 import QtQuick 2.15
 import QtQuick.Window 2.15
 
-
 Item {
     id: swip
 
+    function calculatePrevPage() {
+        if(swiper.currentIndex === swip.thirdPageNumber)
+            return swip.thirdPageNumber
+        if(swiper.currentIndex === swip.firstPageNumber)
+            return swip.firstPageNumber
+    }
+
     property color colorBackGround: "#5ccccc"
-    readonly property int count: swiper.count
-    readonly property int currentIndex: swiper.currentIndex
+    property int prevPageIndex: calculatePrevPage()
+    readonly property alias count: swiper.count
+    readonly property alias currentIndex: swiper.currentIndex
     readonly property int firstPageNumber: 0
     readonly property int secondPageNumber: 1
     readonly property int thirdPageNumber: 2
+    readonly property int pageAmount: 3
+
+    signal indexChanged()
 
     SwipeView {
         id: swiper
@@ -21,7 +31,7 @@ Item {
 
         Repeater {
             id: repeater
-            model: 3
+            model: swip.pageAmount
             Item {
                 Rectangle {
                     anchors.fill: parent
@@ -33,5 +43,6 @@ Item {
                 }
             }
         }
+        onCurrentIndexChanged: swip.indexChanged()
     }
 }

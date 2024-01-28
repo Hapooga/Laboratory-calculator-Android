@@ -1,5 +1,12 @@
 QT += quick
 
+VERSION = 1.0.0.1
+
+QMAKE_TARGET_COMPANY = Hapooga Co
+QMAKE_TARGET_PRODUCT = Lab Calculator
+QMAKE_TARGET_DISCRIPTION = Lab Calculator
+QMAKE_TARGET_COPYRIGHT = Kliuev Mikhail
+
 SOURCES += \
         chemicalequivalentcontroller.cpp \
         evaluator.cpp \
@@ -17,7 +24,6 @@ MyPageCaption.qml \
 MyInputItem.qml \
 MyRadioButtonInputItem.qml \
 MyInputItemVertical.qml
-
 
 resources.prefix = /$${TARGET}
 

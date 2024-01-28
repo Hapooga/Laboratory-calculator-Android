@@ -24,6 +24,8 @@ Item {
     property int textFieldHeight: 35
     property int leftMarginInput: inputItem.leftMarginText + caption.width + inputItem.leftMarginText
     property RegularExpressionValidator inputValidator: RegularExpressionValidator { regularExpression: /[0-9.,]+/ }
+    property string valueBuffer1: ""
+    property string valueBuffer2: ""
 
         Text {
             id: caption

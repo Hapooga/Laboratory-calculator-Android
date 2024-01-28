@@ -61,12 +61,59 @@ Window {
     }
 
 
+    QtObject {
+        id: buffer
+        property string bufferStr: ""
+        property string formulaBuffer: ""
+        property string resultBuffer: ""
+        property string topRadioButtonBuffer: ""
+        property string middleRadioButtonBuffer: ""
+        property string bottomRadioButtonBuffer: ""
+    }
+
     // 1. Переключение свайпом вместо меню
     // 2. TODO: Реализовать клавиатуру без лишних символов с крупными кнопками
+
+    function saveInput() {
+        buffer.bufferStr = buffer.formulaBuffer
+        buffer.formulaBuffer = inputFormula.textInput
+        inputFormula.textInput = buffer.bufferStr
+
+        buffer.bufferStr = buffer.resultBuffer
+        buffer.resultBuffer = molecularWeightOutput.textInput
+        molecularWeightOutput.textInput = buffer.bufferStr
+
+        buffer.bufferStr = buffer.topRadioButtonBuffer
+        buffer.topRadioButtonBuffer = radioButtonInputItemTop.textInput
+        radioButtonInputItemTop.textInput = buffer.bufferStr
+
+        buffer.bufferStr = buffer.middleRadioButtonBuffer
+        buffer.middleRadioButtonBuffer = radioButtonInputItemMiddle.textInput
+        radioButtonInputItemMiddle.textInput = buffer.bufferStr
+
+        buffer.bufferStr = buffer.bottomRadioButtonBuffer
+        buffer.bottomRadioButtonBuffer = radioButtonInputItemBottom.textInput
+        radioButtonInputItemBottom.textInput = buffer.bufferStr
+    }
+
+    function saveCurrentPageInput() {
+        if(swip.currentIndex === swip.thirdPageNumber) {
+            saveInput()
+        }
+        if(swip.currentIndex === swip.secondPageNumber) {
+            if(swip.prevPageIndex === swip.thirdPageNumber) {
+                saveInput()
+            }
+        }
+    }
+
 
     MySwip {
         id: swip
         anchors.fill: parent
+        onIndexChanged: {
+            saveCurrentPageInput()
+        }
     }
 
     MyTopPanel {
@@ -288,14 +335,6 @@ Window {
         }
     }
 
-
-    Keys.onYesPressed: {
-        calculate()
-        console.log("move left")
-    }
-
-
-
     Button {
         id: cleareButton
 
@@ -331,7 +370,6 @@ Window {
         }
 
         onClicked: {
-            // TODO:
             if (swip.currentIndex === swip.firstPageNumber)
                 cleareFirstPage()
             else if (swip.currentIndex === swip.secondPageNumber)
